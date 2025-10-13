@@ -33,4 +33,8 @@ COPY --from=builder /opt/venv /opt/venv
 EXPOSE 8000
 VOLUME ["/opt/ara"]
 
+HEALTHCHECK \
+  --interval=30s --timeout=10s --start-period=10s \
+  CMD nc -z 127.0.0.1 8000 || exit 1
+
 ENTRYPOINT ["/sbin/tini", "--", "/entrypoint.sh"]
