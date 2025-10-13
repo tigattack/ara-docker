@@ -4,7 +4,7 @@ ENV PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1
 
 RUN --mount=type=cache,target=/var/cache/apk,sharing=locked \
-    apk add libpq-dev gcc musl-dev && \
+    apk add libpq-dev mariadb-dev gcc musl-dev && \
     python -m venv /opt/venv
 
 ENV PATH="/opt/venv/bin:$PATH"
@@ -25,7 +25,7 @@ ENV PYTHONUNBUFFERED=1 \
 COPY entrypoint.sh /entrypoint.sh
 
 RUN --mount=type=cache,target=/var/cache/apk,sharing=locked \
-    apk add libpq-dev tini && \
+    apk add libpq mariadb-connector-c tini && \
     chmod +x /entrypoint.sh
 
 COPY --from=builder /opt/venv /opt/venv

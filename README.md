@@ -27,5 +27,4 @@ For more, see the [official documentation](https://ara.readthedocs.io/en/latest/
 - Python 3.14 Alpine
 - ARA with server components
 - Gunicorn WSGI server
-- PostgreSQL support via psycopg2
-- Tini init system
+- SQLite, PostgreSQL, and MySQL/MariaDB support
