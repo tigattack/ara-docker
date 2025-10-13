@@ -1,6 +1,8 @@
 # ARA Docker
 
-Minimal Docker image for [ARA Records Ansible](https://ara.recordsansible.org/).
+Docker image for [ARA Records Ansible](https://ara.recordsansible.org/).
+
+Alpine-based, small size (~120MB), with added support for PostgreSQL and MySQL/MariaDB.
 
 ## Run
 
