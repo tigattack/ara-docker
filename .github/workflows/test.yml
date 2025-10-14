@@ -156,7 +156,7 @@ jobs:
             -e ARA_DATABASE_NAME=ara \
             -e ARA_DATABASE_USER=ara \
             -e ARA_DATABASE_PASSWORD=arapassword \
-            -e ARA_DATABASE_HOST=localhost \
+            -e ARA_DATABASE_HOST=127.0.0.1 \
             -e ARA_DATABASE_PORT=3306 \
             -e ARA_ALLOWED_HOSTS='["*"]' \
             ara:test
