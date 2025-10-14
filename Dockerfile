@@ -18,7 +18,8 @@ FROM python:3.14-alpine
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PATH="/opt/venv/bin:$PATH" \
-    ARA_BASE_DIR=/opt/ara
+    ARA_BASE_DIR=/opt/ara \
+    GUNICORN_LOG_LEVEL=info
 
 COPY entrypoint.sh /entrypoint.sh
 

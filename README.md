@@ -42,9 +42,10 @@ Then open http://localhost:8000
 
 ## Environment Variables
 
+- `GUNICORN_LOG_LEVEL` - Log level for Gunicorn (HTTP server), defaults to `info`. See the [Gunicorn documentation](https://docs.gunicorn.org/en/stable/settings.html#loglevel) for valid options.
 - `ARA_BASE_DIR` - Data directory, defaults to `/opt/ara`
 
-For more, see the [official documentation](https://ara.readthedocs.io/en/latest/api-configuration.html).
+All standard ARA environment variables are supported; see the [official documentation](https://ara.readthedocs.io/en/latest/api-configuration.html).
 
 ## What's Inside
 
