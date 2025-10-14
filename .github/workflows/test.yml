@@ -29,7 +29,6 @@ jobs:
           load: true
           tags: ara:test
           cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       - name: Export image
         run: |
