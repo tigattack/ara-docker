@@ -41,7 +41,7 @@ jobs:
             type=ref,event=branch
             type=ref,event=pr
             type=semver,pattern={{version}},value=${{ steps.ara_version.outputs.version }}
-            type=semver,pattern={{major.minor}},value=${{ steps.ara_version.outputs.version }}
+            type=semver,pattern={{major}}.{{minor}},value=${{ steps.ara_version.outputs.version }}
             type=semver,pattern={{major}},value=${{ steps.ara_version.outputs.version }}
 
       - name: Build image
