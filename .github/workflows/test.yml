@@ -111,7 +111,7 @@ jobs:
         run: |
           docker logs ara-postgres
 
-      - name: Stop container
+      - name: Stop ARA container
         if: always()
         run: |
           docker stop ara-postgres || true
@@ -181,7 +181,7 @@ jobs:
         run: |
           docker logs ara-mariadb
 
-      - name: Stop container
+      - name: Stop ARA container
         if: always()
         run: |
           docker stop ara-mariadb || true
@@ -233,7 +233,7 @@ jobs:
         run: |
           docker logs ara-sqlite
 
-      - name: Stop container
+      - name: Stop ARA container
         if: always()
         run: |
           docker stop ara-sqlite || true
