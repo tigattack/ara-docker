@@ -65,6 +65,8 @@ jobs:
             type=semver,pattern={{version}},value=${{ steps.ara_version.outputs.version }},enable={{is_default_branch}}
             type=semver,pattern={{major}}.{{minor}},value=${{ steps.ara_version.outputs.version }},enable={{is_default_branch}}
             type=semver,pattern={{major}},value=${{ steps.ara_version.outputs.version }},enable={{is_default_branch}}
+          labels: |
+            org.opencontainers.image.documentation=https://ara.readthedocs.io/en/latest
 
       - name: Build image
         uses: docker/build-push-action@v6
