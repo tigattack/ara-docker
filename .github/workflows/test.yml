@@ -13,7 +13,7 @@ on:
       - Dockerfile
       - requirements.txt
       - entrypoint.sh
-      - .github/workflows/build.yml
+      - .github/workflows/test.yml
   workflow_dispatch:
 
 jobs:
