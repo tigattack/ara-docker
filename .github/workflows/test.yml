@@ -1,0 +1,228 @@
+name: Test Docker Image
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  build:
+    name: Build Image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          load: true
+          tags: ara:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Export image
+        run: |
+          docker save ara:test | gzip > ara-image.tar.gz
+
+      - name: Upload image artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ara-image
+          path: ara-image.tar.gz
+          retention-days: 1
+
+  test-postgresql:
+    name: Test with PostgreSQL
+    needs: build
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: ara
+          POSTGRES_PASSWORD: arapassword
+          POSTGRES_DB: ara
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Download image artefact
+        uses: actions/download-artifact@v5
+        with:
+          name: ara-image
+
+      - name: Load Docker image
+        run: |
+          docker load < ara-image.tar.gz
+
+      - name: Run ARA with PostgreSQL
+        run: |
+          docker run -d \
+            --name ara-postgres \
+            --network host \
+            -e ARA_DATABASE_ENGINE=django.db.backends.postgresql \
+            -e ARA_DATABASE_NAME=ara \
+            -e ARA_DATABASE_USER=ara \
+            -e ARA_DATABASE_PASSWORD=arapassword \
+            -e ARA_DATABASE_HOST=localhost \
+            -e ARA_DATABASE_PORT=5432 \
+            -e ARA_ALLOWED_HOSTS='["*"]' \
+            ara:test
+
+          # Wait for container to be healthy
+          timeout 90 bash -c 'until [ "$(docker inspect --format="{{.State.Health.Status}}" ara-postgres)" = "healthy" ]; do sleep 2; done'
+
+      - name: Check migrations ran
+        run: |
+          docker exec ara-postgres ara-manage showmigrations
+
+      - name: Test API health endpoint
+        run: |
+          curl -f http://localhost:8000/api/v1/ || exit 1
+
+      - name: Test API playbooks endpoint
+        run: |
+          curl -f http://localhost:8000/api/v1/playbooks || exit 1
+
+      - name: Check logs
+        if: always()
+        run: |
+          docker logs ara-postgres
+
+      - name: Stop ARA container
+        if: always()
+        run: |
+          docker stop ara-postgres || true
+          docker rm ara-postgres || true
+
+  test-mariadb:
+    name: Test with MariaDB
+    needs: build
+    runs-on: ubuntu-latest
+    services:
+      mariadb:
+        image: mariadb:11
+        env:
+          MARIADB_USER: ara
+          MARIADB_PASSWORD: arapassword
+          MARIADB_DATABASE: ara
+          MARIADB_ROOT_PASSWORD: rootpassword
+        options: >-
+          --health-cmd "healthcheck.sh --connect --innodb_initialized"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 3306:3306
+
+    steps:
+      - name: Download image artefact
+        uses: actions/download-artifact@v5
+        with:
+          name: ara-image
+
+      - name: Load Docker image
+        run: |
+          docker load < ara-image.tar.gz
+
+      - name: Run ARA with MariaDB
+        run: |
+          docker run -d \
+            --name ara-mariadb \
+            --network host \
+            -e ARA_DATABASE_ENGINE=django.db.backends.mysql \
+            -e ARA_DATABASE_NAME=ara \
+            -e ARA_DATABASE_USER=ara \
+            -e ARA_DATABASE_PASSWORD=arapassword \
+            -e ARA_DATABASE_HOST=127.0.0.1 \
+            -e ARA_DATABASE_PORT=3306 \
+            -e ARA_ALLOWED_HOSTS='["*"]' \
+            ara:test
+
+          # Wait for container to be healthy
+          timeout 90 bash -c 'until [ "$(docker inspect --format="{{.State.Health.Status}}" ara-mariadb)" = "healthy" ]; do sleep 2; done'
+
+      - name: Check migrations ran
+        run: |
+          docker exec ara-mariadb ara-manage showmigrations
+
+      - name: Test API health endpoint
+        run: |
+          curl -f http://localhost:8000/api/v1/ || exit 1
+
+      - name: Test API playbooks endpoint
+        run: |
+          curl -f http://localhost:8000/api/v1/playbooks || exit 1
+
+      - name: Check logs
+        if: always()
+        run: |
+          docker logs ara-mariadb
+
+      - name: Stop ARA container
+        if: always()
+        run: |
+          docker stop ara-mariadb || true
+          docker rm ara-mariadb || true
+
+  test-sqlite:
+    name: Test with SQLite (default)
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download image artefact
+        uses: actions/download-artifact@v5
+        with:
+          name: ara-image
+
+      - name: Load Docker image
+        run: |
+          docker load < ara-image.tar.gz
+
+      - name: Run ARA with SQLite
+        run: |
+          docker run -d \
+            --name ara-sqlite \
+            -p 8000:8000 \
+            -e ARA_ALLOWED_HOSTS='["*"]' \
+            ara:test
+
+          # Wait for container to be healthy
+          timeout 90 bash -c 'until [ "$(docker inspect --format="{{.State.Health.Status}}" ara-sqlite)" = "healthy" ]; do sleep 2; done'
+
+      - name: Check migrations ran
+        run: |
+          docker exec ara-sqlite ara-manage showmigrations
+
+      - name: Test API health endpoint
+        run: |
+          curl -f http://localhost:8000/api/v1/ || exit 1
+
+      - name: Test API playbooks endpoint
+        run: |
+          curl -f http://localhost:8000/api/v1/playbooks || exit 1
+
+      - name: Verify SQLite database exists
+        run: |
+          docker exec ara-sqlite ls -lh /opt/ara/ansible.sqlite
+
+      - name: Check logs
+        if: always()
+        run: |
+          docker logs ara-sqlite
+
+      - name: Stop ARA container
+        if: always()
+        run: |
+          docker stop ara-sqlite || true
+          docker rm ara-sqlite || true
