@@ -4,10 +4,25 @@ on:
   push:
     branches:
       - main
+    paths:
+      - Dockerfile
+      - requirements.txt
+      - entrypoint.sh
   pull_request:
     branches:
       - main
+    paths:
+      - Dockerfile
+      - requirements.txt
+      - entrypoint.sh
+      - .github/workflows/build.yml
   workflow_dispatch:
+    inputs:
+      push:
+        description: 'Push the image'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -54,7 +69,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          push: ${{ github.event_name != 'workflow_dispatch' }}
+          push: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.push }}
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
