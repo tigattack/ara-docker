@@ -1,19 +1,6 @@
 name: Test Docker Image
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - Dockerfile
-      - requirements.txt
-      - entrypoint.sh
-  pull_request:
-    branches: [main]
-    paths:
-      - Dockerfile
-      - requirements.txt
-      - entrypoint.sh
-      - .github/workflows/test.yml
   workflow_dispatch:
   workflow_call:
 
