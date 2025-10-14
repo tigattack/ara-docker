@@ -7,7 +7,10 @@ Alpine-based, small size (~120MB), with added support for PostgreSQL and MySQL/M
 ## Run
 
 ```bash
-docker run -p 8000:8000 -v ara-data:/opt/ara ghcr.io/tigattack/ara:latest
+docker run \
+  -p 8000:8000 \
+  -v ara-data:/opt/ara \
+  ghcr.io/tigattack/ara:latest
 ```
 
 ## Build
