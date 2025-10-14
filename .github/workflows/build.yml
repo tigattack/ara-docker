@@ -1,16 +1,14 @@
-name: Build
+name: Build Docker Image
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
       - Dockerfile
       - requirements.txt
       - entrypoint.sh
   pull_request:
-    branches:
-      - main
+    branches: [main]
     paths:
       - Dockerfile
       - requirements.txt
@@ -29,8 +27,11 @@ permissions:
   packages: write
 
 jobs:
+  test:
+    uses: ./.github/workflows/test.yml
   build:
     runs-on: ubuntu-latest
+    needs: test
     steps:
       - name: Checkout code
         uses: actions/checkout@v5

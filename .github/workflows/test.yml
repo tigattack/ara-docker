@@ -1,4 +1,4 @@
-name: Test Docker Build
+name: Test Docker Image
 
 on:
   push:
@@ -15,6 +15,7 @@ on:
       - entrypoint.sh
       - .github/workflows/test.yml
   workflow_dispatch:
+  workflow_call:
 
 jobs:
   build:
