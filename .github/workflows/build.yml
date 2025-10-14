@@ -20,6 +20,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
 
+      - name: Get version
+        id: ara_version
+        run: |
+          version=$(grep ara requirements.txt | cut -d'=' -f3)
+          echo "version=$version" >> $GITHUB_OUTPUT
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
@@ -31,6 +37,12 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ghcr.io/tigattack/ara
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}},value=${{ steps.ara_version.outputs.version }}
+            type=semver,pattern={{major.minor}},value=${{ steps.ara_version.outputs.version }}
+            type=semver,pattern={{major}},value=${{ steps.ara_version.outputs.version }}
 
       - name: Build image
         uses: docker/build-push-action@v6
