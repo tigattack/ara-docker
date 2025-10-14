@@ -17,7 +17,7 @@ on:
   workflow_dispatch:
     inputs:
       push:
-        description: 'Push the image'
+        description: "Push the image"
         required: false
         default: false
         type: boolean
