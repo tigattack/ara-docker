@@ -1,7 +1,6 @@
 FROM python:3.14-alpine AS builder
 
-ENV PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 
 RUN --mount=type=cache,target=/var/cache/apk,sharing=locked \
     apk add libpq-dev mariadb-dev gcc musl-dev && \
@@ -10,6 +9,7 @@ RUN --mount=type=cache,target=/var/cache/apk,sharing=locked \
 ENV PATH="/opt/venv/bin:$PATH"
 
 RUN --mount=type=bind,source=requirements.txt,target=requirements.txt \
+    --mount=type=cache,target=/root/.cache/pip,sharing=locked \
     pip install -r requirements.txt && \
     pip uninstall -y pip setuptools
 
