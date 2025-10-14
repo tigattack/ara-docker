@@ -41,7 +41,7 @@ jobs:
         run: |
           docker save ara:test | gzip > ara-image.tar.gz
 
-      - name: Upload image artifact
+      - name: Upload image artefact
         uses: actions/upload-artifact@v4
         with:
           name: ara-image
@@ -68,7 +68,7 @@ jobs:
           - 5432:5432
 
     steps:
-      - name: Download image artifact
+      - name: Download image artefact
         uses: actions/download-artifact@v5
         with:
           name: ara-image
@@ -138,7 +138,7 @@ jobs:
           - 3306:3306
 
     steps:
-      - name: Download image artifact
+      - name: Download image artefact
         uses: actions/download-artifact@v5
         with:
           name: ara-image
@@ -192,7 +192,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Download image artifact
+      - name: Download image artefact
         uses: actions/download-artifact@v5
         with:
           name: ara-image
