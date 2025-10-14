@@ -176,7 +176,7 @@ jobs:
           docker rm ara-mariadb || true
 
   test-sqlite:
-    name: Test with SQLite (default)
+    name: Test with SQLite
     needs: build
     runs-on: ubuntu-latest
     steps:
