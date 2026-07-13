@@ -1,2 +1,2 @@
-ara[server,postgresql,mysql]==1.7.5
+ara[server,postgresql,mysql]==1.8.0
 gunicorn==23.0.0
