@@ -48,10 +48,15 @@ Then open http://localhost:8000
 
 ### Gunicorn Configuration
 
-- `GUNICORN_CMD_ARGS` - Gunicorn command-line arguments (official Gunicorn feature)
-  - Default: `--bind 0.0.0.0:8000 --workers=4 --log-level info --access-logfile -`
-  - Example: `GUNICORN_CMD_ARGS="--workers=2 --timeout=120 --access-logfile -"`
-  - See [Gunicorn settings documentation](https://docs.gunicorn.org/en/stable/settings.html)
+- `GUNICORN_LOG_LEVEL` - Gunicorn log level, defaults to `info`
+- `GUNICORN_WORKERS` - Gunicorn worker count, defaults to `4`
+- `GUNICORN_THREADS` - Gunicorn thread count, defaults to `4`
+- `GUNICORN_WORKER_CLASS` - Gunicorn worker class, defaults to `gthread`
+- `GUNICORN_CMD_EXTRA_ARGS` - Extra Gunicorn command-line arguments appended to the generated command, defaults to empty
+
+The image builds `GUNICORN_CMD_ARGS` from the variables above. Overriding `GUNICORN_CMD_ARGS` directly is no longer recommended; use `GUNICORN_CMD_EXTRA_ARGS` for additional flags.
+
+See [Gunicorn settings documentation](https://docs.gunicorn.org/en/stable/settings.html) for the full list of supported options.
 
 ## What's Inside
 
