@@ -19,7 +19,13 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PATH="/opt/venv/bin:$PATH" \
     ARA_BASE_DIR="/opt/ara" \
-    GUNICORN_CMD_ARGS="--bind 0.0.0.0:8000 --workers=4 --log-level info --access-logfile -"
+    GUNICORN_LOG_LEVEL="info" \
+    GUNICORN_WORKERS=4 \
+    GUNICORN_THREADS=4 \
+    GUNICORN_WORKER_CLASS="gthread" \
+    GUNICORN_CMD_EXTRA_ARGS=""
+
+ENV GUNICORN_CMD_ARGS="--bind 0.0.0.0:8000 --workers=${GUNICORN_WORKERS} --threads=${GUNICORN_THREADS} --worker-class ${GUNICORN_WORKER_CLASS} --log-level '${GUNICORN_LOG_LEVEL}' --access-logfile - ${GUNICORN_CMD_EXTRA_ARGS}"
 
 COPY entrypoint.sh /entrypoint.sh
 
