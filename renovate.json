@@ -3,6 +3,14 @@
   "extends": [
     "config:recommended"
   ],
+  "packageRules": [
+    {
+      "matchPackageNames": [
+        "ara"
+      ],
+      "changelogUrl": "https://codeberg.org/ansible-community/ara/src/branch/master/doc/source/changelog-release-notes.rst"
+    }
+  ],
   "minor": {
     "automerge": true
   },
