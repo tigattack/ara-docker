@@ -1,6 +1,6 @@
 # ARA Docker
 
-Docker image for [ARA Records Ansible](https://ara.recordsansible.org/).
+Docker image for [ARA Records Ansible](https://ara.recordsansible.org/), supporting operation as either the default API server w/ web UI or Prometheus exporter.
 
 Alpine-based, small size (~120MB), with added support for PostgreSQL and MySQL/MariaDB.
 
@@ -11,10 +11,37 @@ Supported architectures:
 
 ## Run
 
+### Docker Compose
+
+You can simply download the [compose.yml](compose.yml) file and run:
+
+```bash
+# Only API server w/ web UI:
+docker compose up -d
+# API server and Prometheus exporter:
+docker compose --profile exporter up -d
+```
+
+### Docker Run API Server
+
+This will run the API server with built-in web UI:
+
 ```bash
 docker run \
   -p 8000:8000 \
   -v ara-data:/opt/ara \
+  ghcr.io/tigattack/ara:latest
+```
+
+### Docker Run Prometheus Exporter
+
+And this will run the Prometheus exporter:
+
+```bash
+docker run \
+  -p 8001:8001 \
+  -e "ARA_MODE=prometheus" \
+  -e "ARA_API_SERVER=http://ara.example.org" \
   ghcr.io/tigattack/ara:latest
 ```
 
@@ -43,8 +70,13 @@ Then open http://localhost:8000
 
 ### ARA Configuration
 
+- `ARA_MODE` - The mode in which to run ARA, must be one of `server` (default) or `prometheus`.
+  - For more information on the Prometheus exporter functionality: <https://ara.readthedocs.io/en/latest/prometheus.html>
 - `ARA_BASE_DIR` - Data directory, defaults to `/opt/ara`
+- `ARA_API_CLIENT` - Only relevant when `ARA_MODE=prometheus`. Defaults to `http`.
+- `ARA_API_SERVER` - Only relevant when `ARA_MODE=prometheus`. Defaults to `http://server:8000`.
 - All standard [ARA environment variables](https://ara.readthedocs.io/en/latest/api-configuration.html) are supported
+  - See for Prometheus environment variables: <https://ara.readthedocs.io/en/latest/cli.html#ara-prometheus>
 
 ### Gunicorn Configuration
 
