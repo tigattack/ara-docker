@@ -11,6 +11,10 @@ Supported architectures:
 
 ## Run
 
+Run one of the commands below, then open <http://localhost:8000>.
+
+If running the Prometheus exporter, metrics will be available at  <http://localhost:8001/metrics>.
+
 ### Docker Compose
 
 You can simply download the [compose.yml](compose.yml) file and run:
@@ -45,6 +49,12 @@ docker run \
   ghcr.io/tigattack/ara:latest
 ```
 
+### Build
+
+```bash
+docker build -t ara .
+```
+
 ## Tags
 
 - `latest`: Latest stable version of ARA
@@ -57,14 +67,6 @@ The version tags align with the included version of ARA. Some examples:
 - `1.2` could refer to `1.2.0`, and later `1.2.1` when a newer patch version is released.
 - `1` could refer to `1.0.0`, and later `1.0.1` or `1.1.0` when newer minor/patch versions are released.
 
-
-## Build
-
-```bash
-docker build -t ara .
-```
-
-Then open http://localhost:8000
 
 ## Environment Variables
 
