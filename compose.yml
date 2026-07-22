@@ -1,0 +1,36 @@
+name: ara
+services:
+  server:
+    image: ghcr.io/tigattack/ara:latest
+    # environment:
+      # ARA_MODE: "server"
+      # ARA_BASE_DIR: "/opt/ara"
+      # GUNICORN_LOG_LEVEL: "info"
+      # GUNICORN_WORKERS: 4
+      # GUNICORN_THREADS: 4
+      # GUNICORN_WORKER_CLASS: "gthread"
+      # GUNICORN_CMD_EXTRA_ARGS: ""
+      # ...
+    ports:
+      - 8000:8000
+    volumes:
+      - ./ara_data:/opt/ara
+
+  exporter:
+    image: ghcr.io/tigattack/ara:latest
+    environment:
+      ARA_MODE: "prometheus"
+      # ARA_BASE_DIR: "/opt/ara"
+      # GUNICORN_LOG_LEVEL: "info"
+      # GUNICORN_WORKERS: 4
+      # GUNICORN_THREADS: 4
+      # GUNICORN_WORKER_CLASS: "gthread"
+      # GUNICORN_CMD_EXTRA_ARGS: ""
+      # ...
+    ports:
+      - 8001:8001
+    profiles:
+      - exporter
+    depends_on:
+      server:
+        condition: service_healthy
