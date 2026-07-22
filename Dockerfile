@@ -19,6 +19,7 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PATH="/opt/venv/bin:$PATH" \
     ARA_BASE_DIR="/opt/ara" \
+    ARA_MODE="server" \
     GUNICORN_LOG_LEVEL="info" \
     GUNICORN_WORKERS=4 \
     GUNICORN_THREADS=4 \
@@ -27,10 +28,10 @@ ENV PYTHONUNBUFFERED=1 \
 
 ENV GUNICORN_CMD_ARGS="--bind 0.0.0.0:8000 --workers=${GUNICORN_WORKERS} --threads=${GUNICORN_THREADS} --worker-class ${GUNICORN_WORKER_CLASS} --log-level '${GUNICORN_LOG_LEVEL}' --access-logfile - ${GUNICORN_CMD_EXTRA_ARGS}"
 
-COPY entrypoint.sh /entrypoint.sh
+COPY --chmod=+x entrypoint.sh healthcheck.sh /
 
 RUN --mount=type=cache,target=/var/cache/apk,sharing=locked \
-    apk add libpq mariadb-connector-c tini && \
+    apk add curl libpq mariadb-connector-c tini && \
     chmod +x /entrypoint.sh
 
 COPY --from=builder /opt/venv /opt/venv
@@ -40,6 +41,6 @@ VOLUME ["/opt/ara"]
 
 HEALTHCHECK \
     --interval=30s --timeout=10s --start-period=10s \
-    CMD nc -z 127.0.0.1 8000 || exit 1
+    CMD sh /healthcheck.sh
 
 ENTRYPOINT ["/sbin/tini", "--", "/entrypoint.sh"]
