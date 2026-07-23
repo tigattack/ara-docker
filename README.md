@@ -49,6 +49,10 @@ docker run \
   ghcr.io/tigattack/ara:latest
 ```
 
+You can optionally append [`ara prometheus` arguments](https://ara.readthedocs.io/en/latest/cli.html#ara-prometheus) after the image name (e.g. `.../ara:latest --task-limit`).
+
+However, this shouldn't usually be required as most options can also be defined with environment variables (`-e 'TASK_LIMIT=...'`), as shown at the link in the paragraph above.
+
 ### Build
 
 ```bash

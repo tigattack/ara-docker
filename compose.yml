@@ -18,15 +18,14 @@ services:
 
   exporter:
     image: ghcr.io/tigattack/ara:latest
+    # You can optionally append `ara prometheus` arguments as demonstrated in the example below.
+    # Arguments are listed here: https://ara.readthedocs.io/en/latest/cli.html#ara-prometheus
+    # NOTE: This shouldn't usually be required as most options can also be defined with environment variables, as also shown above.
+    # command: --task limit 123
     environment:
       ARA_MODE: "prometheus"
-      # ARA_BASE_DIR: "/opt/ara"
-      # GUNICORN_LOG_LEVEL: "info"
-      # GUNICORN_WORKERS: 4
-      # GUNICORN_THREADS: 4
-      # GUNICORN_WORKER_CLASS: "gthread"
-      # GUNICORN_CMD_EXTRA_ARGS: ""
-      # ...
+      # The exporter can be configured with the environment variables listed here:
+      # https://ara.readthedocs.io/en/latest/cli.html#ara-prometheus
     ports:
       - 8001:8001
     profiles:
