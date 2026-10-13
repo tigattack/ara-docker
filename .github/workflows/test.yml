@@ -116,7 +116,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       mariadb:
-        image: mariadb:12
+        image: mariadb:13
         env:
           MARIADB_USER: ara
           MARIADB_PASSWORD: arapassword
