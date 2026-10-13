@@ -1,4 +1,4 @@
-FROM python:3.14-alpine AS builder
+FROM python:3.15-alpine AS builder
 
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 
@@ -13,7 +13,7 @@ RUN --mount=type=bind,source=requirements.txt,target=requirements.txt \
     pip install -r requirements.txt && \
     pip uninstall -y pip setuptools
 
-FROM python:3.14-alpine
+FROM python:3.15-alpine
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
