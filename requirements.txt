@@ -1,2 +1,2 @@
 ara[server,postgresql,mysql,prometheus]==1.8.0
-gunicorn==26.2.0
+gunicorn==27.0.1
